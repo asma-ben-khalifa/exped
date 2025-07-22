@@ -96,7 +96,11 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
            return demandeL;
           }
        
-           public void assignerLivreurProcheEtChangerStatut(Long livraisonId ) {
+
+
+
+          
+           public Optional<User> assignerLivreurProcheEtChangerStatut(Long livraisonId ) {
     Livraison livraison = livraisonRepository.findById(livraisonId)
             .orElseThrow(() -> new RuntimeException("Livraison introuvable."));
 
@@ -105,6 +109,7 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
     }
 
     DemandeLivraison demande = livraison.getDemandeDeLivraison();
+  
     if (demande == null) {
         throw new RuntimeException("Aucune demande associée à cette livraison.");
     }
@@ -129,11 +134,16 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
 
         livraisonRepository.save(livraison);
         demandeLivraisonRepository.save(demande);
-    } else {
-        throw new RuntimeException("Aucun livreur disponible à proximité.");
+        return Optional.of(livreur);
+   
     }
-}
-            public DemandeLivraison updateDemande(Long id, DemandeLivraison updatedDemande) {  
+
+     return Optional.empty();
+
+           }
+
+
+      public DemandeLivraison updateDemande(Long id, DemandeLivraison updatedDemande) {  
 
         return demandeLivraisonRepository.findById(id)
         .map(existing -> {

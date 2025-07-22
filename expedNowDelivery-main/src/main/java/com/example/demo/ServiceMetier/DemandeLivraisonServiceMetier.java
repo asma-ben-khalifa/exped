@@ -19,6 +19,6 @@ public interface DemandeLivraisonServiceMetier {
  DemandeLivraison getById(Long id);
  List<DemandeLivraison> getByUserId(Long userId);
  List<DemandeLivraison> getAllDemandeLivraison();
- void assignerLivreurProcheEtChangerStatut(Long livraisonId);
+ Optional<User>assignerLivreurProcheEtChangerStatut(Long livraisonId);
 
 }
