@@ -25,8 +25,6 @@ public interface ColisMapperr
      Colis toEntity(ColisDTO dto);
 
 
-     @Mapping(target = "id" , ignore = true) 
-     @Mapping(target = "demandeDeLivraison" , ignore = true)
      List<Colis> toListEntity(List<ColisDTO> dtoList);
 
 

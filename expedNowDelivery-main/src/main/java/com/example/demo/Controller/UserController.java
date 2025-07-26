@@ -2,9 +2,11 @@ package com.example.demo.Controller;
 
 import com.example.demo.ServiceApplicatif.UserServiceApp;
 import com.example.demo.ModelDomain.UserRole;
+import com.example.demo.ModelDTO.LivreurLocalisationDTO;
 import com.example.demo.ModelDTO.UserDTO;
 import com.example.demo.ModelDTO.UserSaveDTO;
 import com.example.demo.ModelDTO.UserUpdated;
+
 
 import java.util.List;
 
@@ -97,7 +99,21 @@ public ResponseEntity<UserDTO> updateUser(
 }
 
 
+@PutMapping("/{userID}/updatelocal")
+public ResponseEntity<UserDTO> updateLocalisation(
+       @PathVariable long userID,
+       @RequestBody LivreurLocalisationDTO dto
+)
+{
+    
+UserDTO local = userServiceApplicatif.updateLocalisation(userID, dto);
+
+
+
+return ResponseEntity.ok(local);
+
 }
 
 
 
+}

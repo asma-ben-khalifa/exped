@@ -18,6 +18,7 @@ public interface UserMetierService {
     User activateUser(Long id) ;
     User updateUser(Long id, User updatedUser);
     Optional<User> getLivreurDispoEtProche(double latitudeDemande ,double longitudeDemande );
+    User updateLocalisation(Long id, double latiude , double longitude);
 
 
 }

@@ -1,6 +1,5 @@
 package com.example.demo.ServiceMetier.impl;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +9,11 @@ import com.example.demo.ModelDomain.DemandeLivraison;
 import com.example.demo.ModelDomain.DemandeLivraisonStatus;
 import com.example.demo.ModelDomain.Livraison;
 import com.example.demo.ModelDomain.LivraisonStatus;
+import com.example.demo.ModelDomain.Notifications;
 import com.example.demo.repository.ColisRepository;
 import com.example.demo.repository.DemandeLivraisonRepository;
 import com.example.demo.repository.LivraisonRepository;
+import com.example.demo.repository.NotificationRespository;
 import com.example.demo.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -44,8 +45,10 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
          private ColisServiceMetier colisServiceMetier;
          private ColisRepository colisRepository;
          private LivraisonRepository livraisonRepository;
+         private NotificationsServiceMetier notificationsServiceMetier;
+         private NotificationRespository notificationRespository;
 
-   public DemandeLivraisonSMImpl(DemandeLivraisonRepository demandeLivraisonRepository, LivraisonRepository livraisonRepository,ColisServiceMetier colisServiceMetier,UserRepository userRepository,UserMetierService userMetierService)
+   public DemandeLivraisonSMImpl(DemandeLivraisonRepository demandeLivraisonRepository,NotificationsServiceMetier notificationsServiceMetier,NotificationRespository notificationRespository, LivraisonRepository livraisonRepository,ColisServiceMetier colisServiceMetier,UserRepository userRepository,UserMetierService userMetierService)
 
           {
            
@@ -54,6 +57,7 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
             this.userRepository = userRepository;
             this.colisServiceMetier = colisServiceMetier;
             this.livraisonRepository = livraisonRepository;
+            this.notificationRespository = notificationRespository;
             
           }
     
@@ -86,6 +90,7 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
            try{
 
                assignerLivreurProcheEtChangerStatut(livraisonsaved.getId());
+
               
            } catch (RuntimeException e) {
 
@@ -100,7 +105,7 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
 
 
           
-           public Optional<User> assignerLivreurProcheEtChangerStatut(Long livraisonId ) {
+     public Optional<User> assignerLivreurProcheEtChangerStatut(Long livraisonId ) {
     Livraison livraison = livraisonRepository.findById(livraisonId)
             .orElseThrow(() -> new RuntimeException("Livraison introuvable."));
 
@@ -122,18 +127,26 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
     if (livreurPlusProche.isPresent()) {
         User livreur = livreurPlusProche.get();
 
+
+        
         if (!Set.of(UserRole.LIVREUR_PERMANENT, UserRole.LIVREUR_OCCASIONNEL).contains(livreur.getRole())) {
             throw new RuntimeException("Le rôle du livreur n'est pas valide.");
         }
 
+        Notifications notifications = notificationsServiceMetier.creerNotificationNouvelleLivraison(livreur);
+        notificationRespository.save(notifications);
         livraison.setLivreur(livreur);
         livreur.setDisponible(false);
         livraison.setStatus(LivraisonStatus.EN_COURS);
 
         demande.setStatus(DemandeLivraisonStatus.EN_COURS);
+       
+
 
         livraisonRepository.save(livraison);
         demandeLivraisonRepository.save(demande);
+
+        
         return Optional.of(livreur);
    
     }
@@ -153,7 +166,7 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
           List<Colis> existingColisList = existing.getColis();
           List<Colis> updatedColisList = updatedDemande.getColis();
 
-          for(int i =0 ; i<existingColisList.size();i++){
+          for(int i =0 ; i<existingColisList.size();i++) {
             
             Colis colisExisting = existingColisList.get(i);
             Colis colisupdated = updatedColisList.get(i);
@@ -234,6 +247,10 @@ public class DemandeLivraisonSMImpl implements DemandeLivraisonServiceMetier{
                
              
               }
+
+
+
+       
 
           
        

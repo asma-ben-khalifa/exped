@@ -74,6 +74,20 @@ public List<User> getAllUserByRole(UserRole role){
     return userRepository.findAllByRole(role);
    }
 
+
+   public  User  updateLocalisation(Long id, double latitude , double longitude){
+    User existingloc =userRepository.findById(id).orElseThrow(()-> new NotFoundException("not found"));
+
+    existingloc.setLatitude(latitude);
+    existingloc.setLongitude(longitude);
+
+   return  userRepository.save(existingloc);
+   }
+
+  
+
+
+
  
 
 public void desactiveUser(Long id){
@@ -101,6 +115,8 @@ public User activateUser(Long id) {
     return userRepository.save(user);
 
 }
+
+
 
  public User updateUser(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id)

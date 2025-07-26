@@ -2,11 +2,15 @@ package com.example.demo.Mapper;
 
 
 import com.example.demo.ModelDomain.User;
+import com.example.demo.ModelDTO.LivreurLocalisationDTO;
 import com.example.demo.ModelDTO.UserDTO;
 import com.example.demo.ModelDTO.UserSaveDTO;
 import com.example.demo.ModelDTO.UserUpdated;
+import org.mapstruct.MappingTarget;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import java.util.List;
 
 @Mapper(componentModel = "spring") 
@@ -24,6 +28,10 @@ public interface UserMapper
 
     User toEntity(UserUpdated userUpdated);
 
+
+    
+
+    
 
 
     

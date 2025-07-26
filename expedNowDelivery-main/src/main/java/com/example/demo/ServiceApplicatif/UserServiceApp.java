@@ -1,9 +1,11 @@
 package com.example.demo.ServiceApplicatif;
 
 
+import com.example.demo.ModelDomain.DemandeLivraison;
 import com.example.demo.ModelDomain.User;
 import com.example.demo.ModelDomain.UserRole;
 import com.example.demo.Mapper.UserMapper;
+import com.example.demo.ModelDTO.LivreurLocalisationDTO;
 import com.example.demo.ModelDTO.UserDTO;
 import com.example.demo.ModelDTO.UserSaveDTO;
 import com.example.demo.ServiceMetier.UserMetierService;
@@ -32,7 +34,9 @@ public class UserServiceApp {
     }
 
     
-    //Méthode pour enregistrer un user avec un mot de passe encodé
+   
+
+
      public UserDTO saveUser(UserSaveDTO userDTO){
         //convertir en entity 
 
@@ -44,9 +48,17 @@ public class UserServiceApp {
 
     }
 
+    public UserDTO updateLocalisation(Long id, LivreurLocalisationDTO dto){
 
+   
 
+       User saved = userMetierService.updateLocalisation(id, dto.getLatitude(),dto.getLongitude());
+   
+    return userMapper.toDto(saved);
 
+}
+
+    
 
 public UserDTO getUserById(Long id) {
 

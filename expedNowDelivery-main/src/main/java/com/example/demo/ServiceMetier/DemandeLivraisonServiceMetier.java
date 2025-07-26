@@ -21,4 +21,5 @@ public interface DemandeLivraisonServiceMetier {
  List<DemandeLivraison> getAllDemandeLivraison();
  Optional<User>assignerLivreurProcheEtChangerStatut(Long livraisonId);
 
+
 }
